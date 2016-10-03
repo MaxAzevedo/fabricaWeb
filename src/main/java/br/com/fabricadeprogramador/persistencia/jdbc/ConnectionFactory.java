@@ -12,8 +12,11 @@ public class ConnectionFactory {
 	
 	public static Connection getConnection(){
 		try {
+			Class.forName("org.postgresql.Driver");
 			return DriverManager.getConnection(url,user,password );
 		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		} catch (ClassNotFoundException e) {
 			throw new RuntimeException(e);
 		}
 	}

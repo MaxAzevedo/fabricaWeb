@@ -1,5 +1,7 @@
 package br.com.fabricadeprogramador;
 
+import java.util.LinkedList;
+
 import br.com.fabricadeprogramador.entidade.User;
 import br.com.fabricadeprogramador.persistencia.jdbc.UserDAO;
 
@@ -9,7 +11,11 @@ public class TestUserDAO {
 	
 	public static void main(String[] args) {
 		//testRegister();
-		testDelete();
+		//testDelete();
+		//testSave();
+		//testSearch();
+		//testGetAllUsers();
+		testAuthenticate();
 	}
 	
 	public static void testRegister(){
@@ -45,5 +51,36 @@ public class TestUserDAO {
 		
 		System.out.println("Deleted");
 	}
+	
+	public static void testSave(){
+		User user = new User();
+		user.setName("Izauro");
+		user.setLogin("izauro");
+		user.setPassword("izauro123");
+		
+		userDAO.save(user);
 
+		user = new User();
+		user.setId(3);
+		user.setName("Izauro Alterado");
+		user.setLogin("izauro_alterado");
+		user.setPassword("izauro123");
+		
+		userDAO.save(user);
+		
+	}
+	
+	public static void testSearch(){
+		User user = userDAO.searchById(1);
+		System.out.println(user.toString());
+	}
+	
+	public static void testGetAllUsers(){
+		LinkedList<User> users = userDAO.getAllUser();
+		System.out.println(users.toString());
+	}
+	
+	public static void testAuthenticate(){
+		System.out.println(userDAO.autheticateUser("joao", "1234").toString());
+	}
 }
