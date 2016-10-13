@@ -14,7 +14,7 @@ public class UserDAO {
 	
 	public void register(User user){
 	
-		String sql = "INSERT INTO public.usuario( login, senha, nome) VALUES (?,?,?)";
+		String sql = "INSERT INTO public.usuario( login, senha, nome) VALUES (?,?,md5(?))";
 		
 	   try {
 		   
@@ -35,7 +35,7 @@ public class UserDAO {
 	}
 
 	public void update(User user) {
-		String sql = "UPDATE public.usuario SET login=? , senha=? , nome=? WHERE id=?";
+		String sql = "UPDATE public.usuario SET login=? , senha=md5(?) , nome=? WHERE id=?";
 		
 		   try {
 			   
@@ -169,7 +169,7 @@ public class UserDAO {
 	 */
 	public User autheticateUser(String login, String password){
 		
-		String sql = "SELECT * FROM usuario WHERE login=? AND senha=?";
+		String sql = "SELECT * FROM usuario WHERE login=? AND senha=md5(?)";
 		
 		try {
 			

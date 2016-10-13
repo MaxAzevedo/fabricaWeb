@@ -4,23 +4,23 @@ import java.io.IOException;
 import java.util.LinkedList;
 
 import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
-
 import br.com.fabricadeprogramador.entidade.User;
 import br.com.fabricadeprogramador.persistencia.jdbc.UserDAO;
-import jdk.nashorn.internal.ir.RuntimeNode.Request;
 
 @WebServlet("/usercontroller.do")
 public class UsuarioController extends HttpServlet {
 	
-	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2018774741868079893L;
+
 	public UsuarioController() {
 		// TODO Auto-generated constructor stub
 	}
@@ -39,12 +39,15 @@ public class UsuarioController extends HttpServlet {
 	
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		
+		String id = req.getParameter("userId");
 		String name = req.getParameter("name");
 		String login = req.getParameter("login");
 		String password = req.getParameter("password");
 		
 		User user = new User();
+		if(!id.equals("null")){
+			user.setId(Integer.parseInt(id));			
+		}
 		user.setName(name);
 		user.setLogin(login);
 		user.setPassword(password);
@@ -53,27 +56,41 @@ public class UsuarioController extends HttpServlet {
 		
 		userDAO.save(user);
 		
-		resp.getWriter().println("Success");
+		resp.sendRedirect("usercontroller.do?action=list");
 	}
 	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		UserDAO userDAO = new UserDAO();
 		String action = req.getParameter("action");
+		
 		if(action.equals("list")){
 			LinkedList<User> users = userDAO.getAllUser();
 			req.setAttribute("users", users);
 			RequestDispatcher reqDeispacher = req.getRequestDispatcher("WEB-INF/Users.jsp");
 			reqDeispacher.forward(req, resp);
-		}
-		
-		
-		if(action.equals("delete")){
+		} 
+		else if(action.equals("delete")){
 			String id = req.getParameter("id");
 			if(id!=null && !id.equals("")){
 				userDAO.delete(Integer.parseInt(id));
+				resp.sendRedirect("usercontroller.do?action=list");
 			}
 		}
-		
+		else if(action.equals("edit")){
+			String userId = req.getParameter("id");
+			User user = userDAO.searchById(Integer.parseInt(userId));
+			req.setAttribute("user", user);
+			RequestDispatcher reqDeispacher = req.getRequestDispatcher("WEB-INF/formUser.jsp");
+			reqDeispacher.forward(req, resp);
+			resp.sendRedirect("usercontroller.do?action=list");
+		}
+		else if(action.equals("add")){
+			User user = new User ("","","");
+			req.setAttribute("user", user);
+			RequestDispatcher reqDeispacher = req.getRequestDispatcher("WEB-INF/formUser.jsp");
+			reqDeispacher.forward(req, resp);
+			resp.sendRedirect("usercontroller.do?action=list");
+		}
 	}
 }

@@ -7,6 +7,13 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Lista de Usuários</title>
+<script type="text/javascript">
+function confirmDelete(id){
+	if(window.confirm("Tem certeza que deseja excluir?")){
+		location.href="usercontroller.do?action=delete&id="+id;
+	}
+}
+</script>
 </head>
 <body>
 	<table>
@@ -17,7 +24,8 @@
 		%>
 		<tr>
 			<td><% out.print(user.getName()); %></td>
-			<td> <a href="usercontroller.do?action=delete&id=<% out.print(user.getId());%>">Excluir</a></td>
+			<td> <a href="javascript:confirmDelete(<%out.print(user.getId());%>)">Excluir</a></td>
+			<td> <a href="usercontroller.do?action=edit&id=<%out.print(user.getId());%>">Editar</a></td>
 		</tr>
 		<%
 		}
